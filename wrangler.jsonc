@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "upshift-mcp",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-07-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+
+  // Fixed-window rate-limit counters. Create with:
+  //   npx wrangler kv namespace create RATE_LIMIT
+  // then paste the id below. Nothing else is stored — no request bodies,
+  // no audited URLs, no caller identity beyond the current minute's count.
+  "kv_namespaces": [{ "binding": "RATE_LIMIT", "id": "PLACEHOLDER_SET_ON_FIRST_DEPLOY" }],
+
+  "vars": {
+    // Calls per minute per IP. The free tier's whole job is to be a shop
+    // window, so this is generous enough to demo and too small to scrape.
+    "RATE_LIMIT_PER_MIN": "20"
+
+    // ALLOWED_ORIGINS is deliberately unset: this server is public,
+    // unauthenticated and read-only, so it holds no authority a rebinding
+    // attack could borrow. Set it to a comma-separated allowlist the moment
+    // auth or write tools are added. See src/worker.ts:checkOrigin.
+  },
+
+  "routes": [{ "pattern": "mcp.upshiftsites.com", "custom_domain": true }]
+}

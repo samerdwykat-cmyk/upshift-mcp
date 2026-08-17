@@ -1,0 +1,26 @@
+{
+  "name": "upshift-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Upshift's reference MCP server — site audit, template match, and live pricing as MCP tools.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node --test --experimental-strip-types test/*.test.ts",
+    "eval": "node --experimental-strip-types evals/run.ts",
+    "gen:catalog": "node scripts/gen-catalog.mjs",
+    "dev": "node --experimental-strip-types scripts/dev-server.mjs",
+    "ci:verify": "npm run typecheck && npm test && npm run eval",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0",
+    "zod": "^4.2.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260801.1",
+    "@types/node": "^26.1.2",
+    "typescript": "^5.9.2",
+    "wrangler": "^4.118.0"
+  }
+}

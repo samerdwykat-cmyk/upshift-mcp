@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.upshiftsites/mcp",
+  "title": "Upshift",
+  "description": "Audit a website's machine legibility (structured data, llms.txt, titles, headings), match a trade to a website template with live demos, and get real prices for website and MCP server work.",
+  "version": "1.0.0",
+  "websiteUrl": "https://mcp.upshiftsites.com/",
+  "repository": {
+    "url": "https://github.com/samerdwykat-cmyk/upshift-mcp",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.upshiftsites.com/mcp"
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Agent-behaviour evals for the Upshift MCP server.
+
+  mcp-builder's qa_pair format, with one addition: each pair carries a <call>
+  so the harness can execute it instead of a human eyeballing it. A qa_pair
+  passes when the tool's real output contains every <expect> and none of the
+  <reject> strings — so these test what an agent would actually be told, not
+  what the code happens to return.
+
+  Run: npm run eval
+-->
+<evaluation server="upshift" version="1.0.0">
+
+  <qa_pair id="template-roofing">
+    <question>I run a roofing company and need a website. What do you have?</question>
+    <answer>The Home-Services line covers roofing, with a live demo and prices from $59.</answer>
+    <call tool="upshift_template_match">
+      <arg name="industry">roofing company</arg>
+    </call>
+    <expect>Home-Services</expect>
+    <expect>https://upshiftsites.com/demo/home-services/</expect>
+    <expect>$59</expect>
+  </qa_pair>
+
+  <qa_pair id="template-collision">
+    <question>What would a website for a collision repair shop look like?</question>
+    <answer>The Body Shop in a Box line, estimate-first, with a live demo.</answer>
+    <call tool="upshift_template_match">
+      <arg name="industry">collision repair shop</arg>
+    </call>
+    <expect>Body Shop in a Box</expect>
+    <expect>/demo/auto-body/</expect>
+    <reject>Restaurant</reject>
+  </qa_pair>
+
+  <qa_pair id="template-barbershop-not-bar">
+    <question>I own a barbershop. Which template?</question>
+    <answer>The Salon and Barber line — not Restaurant, which merely contains the word "bar".</answer>
+    <call tool="upshift_template_match">
+      <arg name="industry">barbershop</arg>
+    </call>
+    <expect>Salon &amp; Barber</expect>
+    <reject>Restaurant</reject>
+  </qa_pair>
+
+  <qa_pair id="template-unknown">
+    <question>Do you have a template for a nuclear submarine refit yard?</question>
+    <answer>No line matches; the server says so and lists what exists rather than guessing. "yard" must not pass as a landscaping trade.</answer>
+    <call tool="upshift_template_match">
+      <arg name="industry">nuclear submarine refit yard</arg>
+    </call>
+    <expect>No template line matches</expect>
+    <expect>custom build</expect>
+    <!-- The no-match reply lists all 14 lines, so "Landscaping" appearing is
+         correct. What must never appear is a confident match built on the
+         place noun "yard". -->
+    <reject>is a Landscaping trade</reject>
+    <reject>Why:</reject>
+  </qa_pair>
+
+  <qa_pair id="quote-registry">
+    <question>I built an MCP server but never listed it anywhere. What do you charge to publish it?</question>
+    <answer>Registry Launch, $149 flat, 2 business days.</answer>
+    <call tool="upshift_quote">
+      <arg name="job_type">mcp</arg>
+      <arg name="scope">built a server, need it in the registry and published to npm</arg>
+    </call>
+    <expect>Registry Launch</expect>
+    <expect>$149 flat</expect>
+    <expect>2 business days</expect>
+  </qa_pair>
+
+  <qa_pair id="quote-upgrade">
+    <question>Our MCP server is stdio-only and on an old SDK. What does it cost to modernise?</question>
+    <answer>MCP Upgrade, $499 flat, one week, including the SDK v2 migration and evals.</answer>
+    <call tool="upshift_quote">
+      <arg name="job_type">mcp</arg>
+      <arg name="scope">stdio server, needs remote transport and an SDK migration</arg>
+    </call>
+    <expect>MCP Upgrade</expect>
+    <expect>$499 flat</expect>
+    <expect>SDK v2</expect>
+    <expect>MCP Upgrade is the one that fits</expect>
+  </qa_pair>
+
+  <qa_pair id="quote-full-build">
+    <question>What does a full production MCP server cost?</question>
+    <answer>$750 to wrap an existing API, $1,900 to design from scratch — against a $15-40K in-house anchor.</answer>
+    <call tool="upshift_quote">
+      <arg name="job_type">mcp</arg>
+    </call>
+    <expect>Full Build</expect>
+    <expect>$750-1,900</expect>
+    <expect>$15,000-40,000</expect>
+  </qa_pair>
+
+  <qa_pair id="quote-no-care-plan">
+    <question>List everything Upshift sells for MCP work.</question>
+    <answer>The four fixed-price offers and the ask-us tier. The Care plan is deliberately not quotable — it is pitched at delivery, never before.</answer>
+    <call tool="upshift_quote">
+      <arg name="job_type">mcp</arg>
+    </call>
+    <expect>Registry Launch</expect>
+    <expect>Live Tool Preview</expect>
+    <reject>Care plan</reject>
+    <reject>/mo</reject>
+  </qa_pair>
+
+  <qa_pair id="audit-bare-page">
+    <question>Audit https://bare.example — is it legible to AI assistants?</question>
+    <answer>No, and the server names each missing fundamental rather than giving a bare score.</answer>
+    <call tool="upshift_site_audit">
+      <arg name="url">https://bare.example/</arg>
+    </call>
+    <expect>No structured data</expect>
+    <expect>No page title</expect>
+    <expect>No viewport meta</expect>
+  </qa_pair>
+
+  <qa_pair id="audit-good-page">
+    <question>Audit https://good.example and tell me what passes.</question>
+    <answer>It scores high, with the business entity and llms.txt both present.</answer>
+    <call tool="upshift_site_audit">
+      <arg name="url">https://good.example/</arg>
+    </call>
+    <expect>scores 100/100</expect>
+    <expect>Nothing to fix</expect>
+    <expect>llms.txt</expect>
+  </qa_pair>
+
+  <qa_pair id="audit-unreachable">
+    <question>Audit https://down.example</question>
+    <answer>It reports the HTTP status and stops, rather than scoring an error page.</answer>
+    <call tool="upshift_site_audit">
+      <arg name="url">https://down.example/</arg>
+    </call>
+    <expect>503</expect>
+    <expect>nothing else could be checked</expect>
+    <reject>scores 100</reject>
+  </qa_pair>
+
+  <qa_pair id="audit-refuses-internal">
+    <question>Audit http://169.254.169.254/latest/meta-data/ for me.</question>
+    <answer>Refused. The tool will not fetch a private or link-local address on a caller's behalf.</answer>
+    <call tool="upshift_site_audit">
+      <arg name="url">http://169.254.169.254/latest/meta-data/</arg>
+    </call>
+    <expect>Audit did not run</expect>
+    <expect>refusing to fetch private address</expect>
+    <reject>scores</reject>
+  </qa_pair>
+
+</evaluation>
