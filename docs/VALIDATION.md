@@ -45,12 +45,17 @@ the Node shim could not prove:
 remains Node-only — workerd-specific behaviour is now observed in production
 rather than before it.
 
-**DNS rebinding is not closed.** `assertSafeUrl` checks the hostname as
-written. A public name that resolves to a private address still passes, because
-closing it needs address resolution before connect and Workers does not expose
-that. The mitigation is the one that already applies: the tool is read-only and
-returns only what it fetched, so a successful rebind leaks the contents of a
-page the attacker could have fetched themselves.
+**DNS rebinding: mitigated by design, not by the URL check.** `assertSafeUrl`
+rejects private, loopback, link-local, multicast and IPv4-mapped targets as
+written, but hostnames are checked literally rather than resolved — closing that
+needs address resolution before connect, which the Workers runtime does not
+expose. The mitigation is structural rather than incidental: this server holds
+no ambient authority. It is unauthenticated, read-only, has no session, no
+cookie and no private-network position, and every tool returns only what it
+fetched. So the most a successful rebind yields is the content of a page the
+attacker could have requested directly. A build for a client that adds auth or
+write tools does not inherit that property, which is why `ALLOWED_ORIGINS` and
+an egress allowlist are day-one items on those and not on this one.
 
 **The registry namespace is unclaimed.** `com.upshiftsites/mcp` requires DNS
 verification of `upshiftsites.com` before the registry will accept the

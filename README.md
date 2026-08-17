@@ -72,10 +72,15 @@ and custom domain are provisioned; `npm run deploy` ships a new version.
 
 Still outstanding: publishing `server.json` to the registry, which needs a DNS
 TXT record on `upshiftsites.com` to claim the `com.upshiftsites` namespace.
-See [docs/REGISTRY-SUBMISSION.md](docs/REGISTRY-SUBMISSION.md).
 
 ## Honest gaps
 
-In [docs/VALIDATION.md](docs/VALIDATION.md), including the four real bugs the
-eval suite caught during the build — which is the argument for shipping evals
-with a server, and the thing we sell.
+In [docs/VALIDATION.md](docs/VALIDATION.md) — what is verified, what is not,
+and the four real bugs the eval suite caught during the build (one of them a
+security bypass). That document is the argument for shipping evals alongside a
+server, which is the part of this we sell.
+
+## Licence
+
+MIT. Lift anything useful. If you would rather we built and ran it for you,
+that is at <https://upshiftsites.com/store/mcp-server-service/>.
