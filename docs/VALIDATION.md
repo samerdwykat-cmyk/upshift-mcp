@@ -57,9 +57,12 @@ attacker could have requested directly. A build for a client that adds auth or
 write tools does not inherit that property, which is why `ALLOWED_ORIGINS` and
 an egress allowlist are day-one items on those and not on this one.
 
-**The registry namespace is unclaimed.** `com.upshiftsites/mcp` requires DNS
-verification of `upshiftsites.com` before the registry will accept the
-publish. That is an owner action, not a code change.
+**The registry entry is live; the Glama listing is approved but unclaimed.**
+`com.upshiftsites/mcp` is published `active` on the official registry against
+the DNS-verified namespace. On Glama, quality and installability read "not
+tested / cannot be installed" until the server is claimed (a GitHub sign-in —
+an owner action, not a code change) and a Glama release is built from their
+admin panel. `glama.json` names the maintainer so the claim binds.
 
 **The audit's performance signal is thin, on purpose.** One server-side fetch
 measures bytes and elapsed time. It cannot measure LCP, CLS or anything a

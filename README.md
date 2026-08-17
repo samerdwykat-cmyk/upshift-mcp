@@ -70,8 +70,16 @@ npm run gen:catalog
 **Live since 2026-08-16** at `https://mcp.upshiftsites.com/mcp`. KV namespace
 and custom domain are provisioned; `npm run deploy` ships a new version.
 
-Still outstanding: publishing `server.json` to the registry, which needs a DNS
-TXT record on `upshiftsites.com` to claim the `com.upshiftsites` namespace.
+## Listed
+
+- Official MCP registry: `com.upshiftsites/mcp`, published `active` against
+  the DNS-verified namespace.
+- [Glama](https://glama.ai/mcp/servers/samerdwykat-cmyk/upshift-mcp) —
+  approved 2026-08-16.
+
+<a href="https://glama.ai/mcp/servers/samerdwykat-cmyk/upshift-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/samerdwykat-cmyk/upshift-mcp/badge" alt="Upshift MCP server on Glama" />
+</a>
 
 ## Honest gaps
 
