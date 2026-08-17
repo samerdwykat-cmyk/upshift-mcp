@@ -191,3 +191,30 @@ test("origin policy: open by default, strict once an allowlist is set", () => {
     "a non-browser client sends no Origin and must still work",
   );
 });
+
+test("a browser lands on the shop window; an MCP client still gets its 405", async () => {
+  // /mcp is the URL in the registry listing and in every outreach email, so a
+  // person pasting it into a browser is the first impression, not an edge case.
+  const browser = await worker.fetch(
+    new Request("https://mcp.upshiftsites.com/mcp", {
+      headers: { accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" },
+    }),
+    stubEnv(),
+  );
+  assert.equal(browser.status, 303);
+  assert.equal(new URL(browser.headers.get("location")!).pathname, "/");
+
+  // An MCP client advertises event-stream. It must keep getting 405 — the
+  // GET stream endpoint does not exist in this revision.
+  for (const accept of ["application/json, text/event-stream", "text/event-stream"]) {
+    const client = await worker.fetch(
+      new Request("https://mcp.upshiftsites.com/mcp", { headers: { accept } }),
+      stubEnv(),
+    );
+    assert.equal(client.status, 405, `accept: ${accept} must stay 405`);
+  }
+
+  // curl with no Accept is not a browser either.
+  const bare = await worker.fetch(new Request("https://mcp.upshiftsites.com/mcp"), stubEnv());
+  assert.equal(bare.status, 405);
+});

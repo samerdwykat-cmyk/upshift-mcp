@@ -70,6 +70,19 @@ export default {
       return json({ error: "not found", mcp_endpoint: MCP_PATH }, 404, cors);
     }
 
+    // A person who pastes the endpoint into a browser gets a JSON-RPC error,
+    // because GET on the MCP endpoint is 405 in this revision. That is correct
+    // for a client and useless for a human — and /mcp is the URL that appears
+    // in the registry listing, in server.json, and in every outreach email, so
+    // the browser case is the one strangers actually hit first.
+    //
+    // Content negotiation keeps both honest: an MCP client asking for
+    // event-stream still gets its 405; a browser asking for HTML gets sent to
+    // the landing page. Nothing here claims GET is a valid MCP operation.
+    if (request.method === "GET" && prefersHtml(request)) {
+      return Response.redirect(new URL("/", url).toString(), 303);
+    }
+
     // Spec 2026-07-28 dropped GET streams and DELETE sessions. The SDK answers
     // 405 for those; the rate limit only needs to guard real work.
     if (request.method === "POST") {
@@ -134,6 +147,19 @@ export function checkOrigin(
   return list.includes(origin)
     ? { allowed: true, echo: origin }
     : { allowed: false, echo: null };
+}
+
+/**
+ * Is this a browser rather than an MCP client?
+ *
+ * An MCP client always advertises `text/event-stream` — the transport requires
+ * it. So event-stream anywhere in Accept means "protocol traffic, answer 405",
+ * and only a request that wants HTML without it is treated as a person.
+ */
+export function prefersHtml(request: Request): boolean {
+  const accept = request.headers.get("accept")?.toLowerCase() ?? "";
+  if (accept.includes("text/event-stream")) return false;
+  return accept.includes("text/html");
 }
 
 function corsHeaders(echo: string | null): Record<string, string> {
