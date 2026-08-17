@@ -10,7 +10,7 @@
 
   Run: npm run eval
 -->
-<evaluation server="upshift" version="1.0.0">
+<evaluation server="upshift" version="1.0.1">
 
   <qa_pair id="template-roofing">
     <question>I run a roofing company and need a website. What do you have?</question>

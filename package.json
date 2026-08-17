@@ -1,15 +1,44 @@
 {
   "name": "upshift-mcp",
-  "version": "1.0.0",
-  "private": true,
+  "version": "1.0.1",
   "description": "Upshift's reference MCP server — site audit, template match, and live pricing as MCP tools.",
+  "license": "MIT",
   "type": "module",
+  "mcpName": "com.upshiftsites/mcp",
+  "bin": {
+    "upshift-mcp": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samerdwykat-cmyk/upshift-mcp.git"
+  },
+  "homepage": "https://mcp.upshiftsites.com/",
+  "bugs": {
+    "url": "https://github.com/samerdwykat-cmyk/upshift-mcp/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mcp-server",
+    "seo",
+    "structured-data",
+    "llms-txt",
+    "site-audit"
+  ],
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "node --test --experimental-strip-types test/*.test.ts",
     "eval": "node --experimental-strip-types evals/run.ts",
     "gen:catalog": "node scripts/gen-catalog.mjs",
     "dev": "node --experimental-strip-types scripts/dev-server.mjs",
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build",
     "ci:verify": "npm run typecheck && npm test && npm run eval",
     "deploy": "wrangler deploy"
   },

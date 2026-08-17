@@ -19,6 +19,13 @@ https://mcp.upshiftsites.com/mcp
 }
 ```
 
+Or run the same server locally — stdio by default, for clients that spawn a
+command; `--http` serves the full Worker on localhost:
+
+```bash
+npx upshift-mcp
+```
+
 ## Tools
 
 | Tool | Does |
@@ -76,6 +83,8 @@ and custom domain are provisioned; `npm run deploy` ships a new version.
   the DNS-verified namespace.
 - [Glama](https://glama.ai/mcp/servers/samerdwykat-cmyk/upshift-mcp) —
   approved 2026-08-16.
+- npm: [`upshift-mcp`](https://www.npmjs.com/package/upshift-mcp) —
+  `npx upshift-mcp` runs this same server locally.
 
 <a href="https://glama.ai/mcp/servers/samerdwykat-cmyk/upshift-mcp">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/samerdwykat-cmyk/upshift-mcp/badge" alt="Upshift MCP server on Glama" />
