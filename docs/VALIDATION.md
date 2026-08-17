@@ -28,17 +28,22 @@ Reproduce all of it: `npm run ci:verify` (typecheck + 30 tests + 12 evals).
 
 ## Not verified, and why
 
-**Never deployed.** `wrangler deploy` has not been run from this machine for
-this project. The custom domain `mcp.upshiftsites.com` does not resolve yet,
-and the KV namespace id in `wrangler.jsonc` is still a placeholder. Every
-"live" claim above was observed against the Node dev server, which runs the
-same `src/worker.ts` — but a Workers runtime is not a Node runtime, and that
-difference is untested here.
+**~~Never deployed~~ — deployed 2026-08-16**, and the whole table above was
+re-run against production on real workerd. Additionally verified there, which
+the Node shim could not prove:
 
-**workerd does not run on this box.** macOS 12; `wrangler dev` needs 13.5+. The
-development path is `npm run dev`, which serves the production handler on Node.
-Anything workerd-specific (KV latency, isolate limits, `nodejs_compat` edges)
-is unobserved until the first real deploy.
+| Claim | Result on production |
+|---|---|
+| Custom domain + KV binding | `/health` 200; `env.RATE_LIMIT` bound |
+| Rate limiter on real KV (not a Map) | closed at exactly 20/min, `retry-after` sent |
+| Outbound fetch from a Worker isolate | audited `https://umami.is/` — 85/100, 3 real findings |
+| SSRF guard under workerd | `169.254.169.254` refused |
+| All four protocol error paths | `-32020`, `-32022`, `404 -32601`, `405` |
+
+**workerd still does not run *locally*.** macOS 12; `wrangler dev` needs 13.5+.
+`npm run dev` serves the production handler on Node, so pre-deploy verification
+remains Node-only — workerd-specific behaviour is now observed in production
+rather than before it.
 
 **DNS rebinding is not closed.** `assertSafeUrl` checks the hostname as
 written. A public name that resolves to a private address still passes, because

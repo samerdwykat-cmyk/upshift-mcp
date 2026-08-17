@@ -67,15 +67,12 @@ npm run gen:catalog
 
 ## Deploying
 
-Never been deployed. Before the first `wrangler deploy`:
+**Live since 2026-08-16** at `https://mcp.upshiftsites.com/mcp`. KV namespace
+and custom domain are provisioned; `npm run deploy` ships a new version.
 
-1. `npx wrangler kv namespace create RATE_LIMIT`, paste the id into
-   `wrangler.jsonc`.
-2. Point `mcp.upshiftsites.com` at the Worker (the route is declared, the DNS
-   record is not).
-3. `npm run ci:verify`, then `npm run deploy`.
-4. Publish `server.json` to the registry — which needs DNS verification of
-   `upshiftsites.com` for the `com.upshiftsites` namespace first.
+Still outstanding: publishing `server.json` to the registry, which needs a DNS
+TXT record on `upshiftsites.com` to claim the `com.upshiftsites` namespace.
+See [docs/REGISTRY-SUBMISSION.md](docs/REGISTRY-SUBMISSION.md).
 
 ## Honest gaps
 

@@ -10,7 +10,7 @@
   //   npx wrangler kv namespace create RATE_LIMIT
   // then paste the id below. Nothing else is stored — no request bodies,
   // no audited URLs, no caller identity beyond the current minute's count.
-  "kv_namespaces": [{ "binding": "RATE_LIMIT", "id": "PLACEHOLDER_SET_ON_FIRST_DEPLOY" }],
+  "kv_namespaces": [{ "binding": "RATE_LIMIT", "id": "605e95a4e6be4626a5ff189a388166f2" }],
 
   "vars": {
     // Calls per minute per IP. The free tier's whole job is to be a shop
