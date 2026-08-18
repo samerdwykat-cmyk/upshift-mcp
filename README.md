@@ -93,9 +93,11 @@ and custom domain are provisioned; `npm run deploy` ships a new version.
 - Official MCP registry: `com.upshiftsites/mcp`, published `active` against
   the DNS-verified namespace.
 - [Glama](https://glama.ai/mcp/servers/samerdwykat-cmyk/upshift-mcp) —
-  approved 2026-08-16.
+  installable, with a released container built from this repo.
 - npm: [`upshift-mcp`](https://www.npmjs.com/package/upshift-mcp) —
   `npx upshift-mcp` runs this same server locally.
+
+[![Glama score for upshift-mcp](https://glama.ai/mcp/servers/samerdwykat-cmyk/upshift-mcp/badges/score.svg)](https://glama.ai/mcp/servers/samerdwykat-cmyk/upshift-mcp)
 
 <a href="https://glama.ai/mcp/servers/samerdwykat-cmyk/upshift-mcp">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/samerdwykat-cmyk/upshift-mcp/badge" alt="Upshift MCP server on Glama" />
@@ -104,9 +106,10 @@ and custom domain are provisioned; `npm run deploy` ships a new version.
 ## Honest gaps
 
 In [docs/VALIDATION.md](docs/VALIDATION.md) — what is verified, what is not,
-and the four real bugs the eval suite caught during the build (one of them a
-security bypass). That document is the argument for shipping evals alongside a
-server, which is the part of this we sell.
+the four real bugs the eval suite caught during the build (one of them a
+security bypass), and the fifth it missed. That document is the argument for
+shipping evals alongside a server, which is the part of this we sell; the miss
+is part of the argument, not an exception to it.
 
 ## Licence
 
