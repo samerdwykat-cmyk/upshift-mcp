@@ -13,7 +13,7 @@ import { safeFetch, probePath, UnsafeUrlError } from "./safe-fetch.ts";
 import { matchTemplates, TEMPLATES } from "./match.ts";
 import { SERVICES, ASK_US, FOOTER, SERVICE_PAGE, priceLabel } from "./services.ts";
 
-export const SERVER_INFO = { name: "upshift", version: "1.0.1" } as const;
+export const SERVER_INFO = { name: "upshift", version: "1.0.2" } as const;
 
 export const INSTRUCTIONS = `Upshift builds websites and MCP servers for local businesses and software vendors.
 

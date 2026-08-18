@@ -11,6 +11,37 @@ import { analyze, parseJsonLd, type AuditInput } from "../src/audit.ts";
 import { matchTemplates } from "../src/match.ts";
 import { checkRateLimit, MemoryCounterStore } from "../src/ratelimit.ts";
 import { SERVICES, priceLabel } from "../src/services.ts";
+import { SERVER_INFO } from "../src/server.ts";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
+/* ------------------------------- version ------------------------------- */
+
+/**
+ * The version lives in four places and nothing at runtime notices when they
+ * disagree — which is exactly how the deployed Worker once served 1.0.0 while
+ * npm and the registry both said 1.0.1. `SERVER_INFO` is a hardcoded constant,
+ * so `npm version` moves package.json and the lockfile and silently leaves the
+ * other two behind. This is the check that fails instead.
+ */
+test("every version source agrees with package.json", () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const read = (f: string) => JSON.parse(readFileSync(join(here, f), "utf8"));
+  const pkg = read("../package.json");
+  const lock = read("../package-lock.json");
+  const server = read("../server.json");
+
+  assert.equal(SERVER_INFO.version, pkg.version, "src/server.ts SERVER_INFO is hardcoded — bump it too");
+  assert.equal(lock.version, pkg.version, "package-lock.json");
+  assert.equal(lock.packages?.[""]?.version, pkg.version, 'package-lock.json packages[""]');
+  assert.equal(server.version, pkg.version, "server.json");
+  assert.equal(
+    server.packages?.[0]?.version,
+    pkg.version,
+    "server.json packages[].version — the registry reads this one",
+  );
+});
 
 /* ------------------------------ URL guard ------------------------------ */
 
