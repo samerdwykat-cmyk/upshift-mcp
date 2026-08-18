@@ -96,10 +96,20 @@ The build test passed on the first attempt: 44 packages, 0 vulnerabilities,
 `tsc -p tsconfig.build.json` compiled, image exported, and the container
 started far enough for Glama to read the tool schemas back.
 
-**Still unverified:** quality reads "not tested". The Score tab says
-tool-definition-quality and server-coherence scoring require a release, and one
-now exists, but their scan has not run since — so whether it populates, and
-what it scores, is unknown rather than pending.
+**Quality scored `A` on 2026-08-17, and the released container was tested
+end-to-end.** Cutting the release populated the score exactly as the Score tab
+said it would: the listing now reads `A` for license, `A` for quality and `A`
+for maintenance. Glama's own Inspector was pointed at a sandbox instance of the
+released image and `upshift_template_match("collision repair")` returned the
+Body Shop in a Box line with its live demo link, store link, real prices and
+match reasons — so the install path a stranger actually uses is verified, not
+just the build.
+
+Worth recording from that run: Glama's Inspector opens with `initialize`, the
+**legacy** handshake, not `server/discover`. This server answers it on purpose
+(`legacy: "stateless"` in `src/worker.ts`), so that is the compatibility path
+working rather than a fault — but it does mean a major directory's own client
+is still on the 2025 era.
 
 **The audit's performance signal is thin, on purpose.** One server-side fetch
 measures bytes and elapsed time. It cannot measure LCP, CLS or anything a
