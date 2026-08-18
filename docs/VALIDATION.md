@@ -76,10 +76,17 @@ form (`type`/`url`), which is not something anyone can install; the npx path
 existed but was documented as a bare shell line. The stdio config block is now
 in the README, which costs nothing and is the config a user wants regardless.
 
-**Unverified as of 2026-08-17:** whether Glama re-indexes and flips the label.
-The correlation is 2-for-2 against comparison listings, not a documented rule,
-and Glama's re-crawl cadence is not published. If it does not flip, the next
-step is their Report Issue link, not a hosted release.
+**The cause is confirmed, and it is staleness rather than judgement.** Glama's
+page links a source tree at commit `9f3b6e5` — six commits behind `main`, and
+one commit before `86bc15f`, which published the npm package. So
+`hosting:remote-capable` was *correct* for what was crawled: at that commit the
+server really was remote-only. There is no classification to argue, only a
+crawl to wait for. Reported to support@glama.ai on 2026-08-17 with the commit
+range.
+
+**Unverified:** whether the re-crawl lands and the label flips. Glama publishes
+no cadence and exposes no refresh endpoint, so a scheduled routine polls the
+`attributes` field daily rather than anyone remembering to look.
 
 Quality "not tested" is a separate matter and does still want a Glama-hosted
 release — declined deliberately, since it puts an already-free Cloudflare
