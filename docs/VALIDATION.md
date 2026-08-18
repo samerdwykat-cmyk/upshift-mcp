@@ -65,12 +65,25 @@ approved and claimed on 2026-08-16 and currently reads `A` for license
 (permissive) and `C` for maintenance.
 
 Quality still reads "not tested" and the page still says the server cannot be
-installed. Lifting those two requires a Glama-*hosted* release — re-hosting a
-server that is already free on Cloudflare onto metered billing (machine-hours
-plus egress) for no reason but to flip two labels. Declined deliberately; the
-labels are not worth the bill. The free half of the problem was fixed instead:
-`upshift-mcp` is published on npm, so any client can run it with `npx` without
-Glama hosting anything.
+installed.
+
+"Cannot be installed" was first written off here as needing a Glama-*hosted*
+release. That was wrong, and it was wrong in the expensive direction — it
+argued for paying to re-host a free server. Comparing against listings Glama
+does treat as installable shows the actual signal is a `mcpServers` config
+block containing a `command` in the README. This README had only the remote
+form (`type`/`url`), which is not something anyone can install; the npx path
+existed but was documented as a bare shell line. The stdio config block is now
+in the README, which costs nothing and is the config a user wants regardless.
+
+**Unverified as of 2026-08-17:** whether Glama re-indexes and flips the label.
+The correlation is 2-for-2 against comparison listings, not a documented rule,
+and Glama's re-crawl cadence is not published. If it does not flip, the next
+step is their Report Issue link, not a hosted release.
+
+Quality "not tested" is a separate matter and does still want a Glama-hosted
+release — declined deliberately, since it puts an already-free Cloudflare
+server on metered billing to flip one label.
 
 **The audit's performance signal is thin, on purpose.** One server-side fetch
 measures bytes and elapsed time. It cannot measure LCP, CLS or anything a

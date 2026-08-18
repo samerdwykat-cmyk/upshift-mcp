@@ -19,8 +19,19 @@ https://mcp.upshiftsites.com/mcp
 }
 ```
 
-Or run the same server locally — stdio by default, for clients that spawn a
-command; `--http` serves the full Worker on localhost:
+Or run the same server locally, for clients that spawn a command rather than
+call a URL. Nothing to clone or build — it is published on npm:
+
+```json
+{
+  "mcpServers": {
+    "upshift": { "command": "npx", "args": ["-y", "upshift-mcp"] }
+  }
+}
+```
+
+The same binary from a shell. stdio is the default; `--http` serves the full
+Worker on localhost instead:
 
 ```bash
 npx upshift-mcp
@@ -49,7 +60,7 @@ src/
   catalog.generated.ts   Template lines + prices, generated from the store
   landing.ts     The page a human gets at /
 evals/           12 qa_pairs, run over the real protocol
-test/            30 tests: protocol conformance + the pure logic
+test/            32 tests: protocol conformance + the pure logic
 ```
 
 ## Working on it
