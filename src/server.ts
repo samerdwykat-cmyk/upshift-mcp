@@ -45,7 +45,11 @@ export function buildServer(deps: ServerDeps = {}): McpServer {
         "Fetch a live website and report how legible it is to search engines and AI assistants: " +
         "structured data (JSON-LD), llms.txt, robots.txt, title and meta description, headings, " +
         "image alt text, HTTPS and document weight. Returns findings with severity and a 0-100 " +
-        "score. Use this to check a real site before recommending changes to it.",
+        "score. Use this to check a real site before recommending changes to it. " +
+        "Makes one outbound request to the URL given, so it only sees what a fetch can " +
+        "establish — never rendering or browser metrics. Refuses private, loopback and " +
+        "link-local addresses, and reports a page as unreachable rather than scoring the " +
+        "error body.",
       inputSchema: z.object({
         url: z
           .string()
@@ -144,10 +148,12 @@ export function buildServer(deps: ServerDeps = {}): McpServer {
     {
       title: "Find the website template for a trade",
       description:
-        "Given an industry or trade (and optionally what the business needs), return which of " +
-        "Upshift's 14 website template lines fit, ranked, each with a live demo link, the store " +
-        "link, and real prices. Use when someone asks what a website for a given trade should " +
-        "look like or cost.",
+        "Given an industry or trade (and optionally what the business needs), rank Upshift's 14 " +
+        "website template lines and return the best three, each with a live demo link, the " +
+        "store link, real prices, and the words that made it match. Use when someone asks what " +
+        "a website for a given trade should look like or cost. Answers from a catalog held in " +
+        "the server, so it makes no network call and returns no matches — rather than a forced " +
+        "one — when the trade is outside the 14 lines.",
       inputSchema: z.object({
         industry: z
           .string()
@@ -240,7 +246,10 @@ export function buildServer(deps: ServerDeps = {}): McpServer {
       description:
         "Return Upshift's real prices. job_type 'mcp' covers MCP server work (registry listing, " +
         "live tool preview, spec upgrade, full build); 'website' covers website templates and " +
-        "done-for-you launches. These are the actual listed prices, not estimates.",
+        "done-for-you launches. These are the actual listed prices, not estimates. Use when " +
+        "someone asks what a job costs, what a tier includes, or how long it takes. The figures " +
+        "are generated from the live store catalog, so this cannot quote a price that is not " +
+        "sold; it makes no network call and the same arguments always return the same answer.",
       inputSchema: z.object({
         job_type: z
           .enum(["mcp", "website"])
@@ -249,7 +258,9 @@ export function buildServer(deps: ServerDeps = {}): McpServer {
           .string()
           .optional()
           .describe(
-            'Optional free text narrowing the answer, e.g. "we have a server on stdio" or "roofing company, no site".',
+            "Optional free text about the situation, used to pick which tier to lead with and " +
+              'to explain why, e.g. "we have a server on stdio" or "roofing company, no site". ' +
+              "Never changes the prices themselves.",
           ),
       }),
       outputSchema: z.object({
