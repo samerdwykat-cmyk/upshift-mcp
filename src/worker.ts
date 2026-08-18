@@ -162,13 +162,26 @@ export function prefersHtml(request: Request): boolean {
   return accept.includes("text/html");
 }
 
+/**
+ * CORS.
+ *
+ * `mcp-protocol-version` is listed in allow-headers because a browser client
+ * sends it: in this revision it is an inbound cross-check against the body's
+ * envelope claim, and a request carrying it must not be blocked at the
+ * preflight.
+ *
+ * It is deliberately absent from expose-headers. 2026-07-28 negotiation is
+ * carried in the result's `_meta`, never in a response header — the header
+ * "never upgrades or downgrades a body-derived classification", so the server
+ * has nothing to answer with. Exposing it would promise a browser a header
+ * that can never arrive.
+ */
 function corsHeaders(echo: string | null): Record<string, string> {
   return {
     "access-control-allow-origin": echo ?? "*",
     "access-control-allow-methods": "POST, GET, OPTIONS",
     "access-control-allow-headers":
       "content-type, mcp-protocol-version, mcp-method, mcp-name, authorization",
-    "access-control-expose-headers": "mcp-protocol-version",
     "access-control-max-age": "86400",
     vary: "origin",
   };

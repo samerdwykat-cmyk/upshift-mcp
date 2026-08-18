@@ -192,6 +192,32 @@ test("origin policy: open by default, strict once an allowlist is set", () => {
   );
 });
 
+test("CORS advertises no response header this revision never sends", async () => {
+  const res = await worker.fetch(post(rpc("server/discover")), stubEnv());
+
+  // Inbound: a browser client sends the cross-check header, so the preflight
+  // has to allow it.
+  assert.match(
+    res.headers.get("access-control-allow-headers") ?? "",
+    /mcp-protocol-version/,
+    "a browser client must be allowed to send the cross-check header",
+  );
+
+  // Outbound: negotiation lives in the result envelope, not in a header. If
+  // the server does not send it, exposing it advertises something a browser
+  // can never read — so both must stay absent together.
+  assert.equal(
+    res.headers.get("mcp-protocol-version"),
+    null,
+    "this revision carries the negotiated version in _meta, not a header",
+  );
+  assert.equal(
+    res.headers.get("access-control-expose-headers"),
+    null,
+    "nothing to expose while no protocol header is sent",
+  );
+});
+
 test("a browser lands on the shop window; an MCP client still gets its 405", async () => {
   // /mcp is the URL in the registry listing and in every outreach email, so a
   // person pasting it into a browser is the first impression, not an edge case.
