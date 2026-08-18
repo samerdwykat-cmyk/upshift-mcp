@@ -3,7 +3,7 @@
   "name": "com.upshiftsites/mcp",
   "title": "Upshift",
   "description": "Audit a site's structured data and llms.txt, match a trade to a template, and quote real prices.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "websiteUrl": "https://mcp.upshiftsites.com/",
   "repository": {
     "url": "https://github.com/samerdwykat-cmyk/upshift-mcp",
@@ -20,7 +20,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "upshift-mcp",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"

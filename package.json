@@ -1,6 +1,6 @@
 {
   "name": "upshift-mcp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Upshift's reference MCP server — site audit, template match, and live pricing as MCP tools.",
   "license": "MIT",
   "type": "module",
