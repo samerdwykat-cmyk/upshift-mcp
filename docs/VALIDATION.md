@@ -58,12 +58,19 @@ attacker could have requested directly. A build for a client that adds auth or
 write tools does not inherit that property, which is why `ALLOWED_ORIGINS` and
 an egress allowlist are day-one items on those and not on this one.
 
-**The registry entry is live; the Glama listing is approved but unclaimed.**
-`com.upshiftsites/mcp` is published `active` on the official registry against
-the DNS-verified namespace. On Glama, quality and installability read "not
-tested / cannot be installed" until the server is claimed (a GitHub sign-in —
-an owner action, not a code change) and a Glama release is built from their
-admin panel. `glama.json` names the maintainer so the claim binds.
+**The registry entry is live; the Glama listing is claimed, and its quality
+score is unearned on purpose.** `com.upshiftsites/mcp` is published `active` on
+the official registry against the DNS-verified namespace. The Glama listing was
+approved and claimed on 2026-08-16 and currently reads `A` for license
+(permissive) and `C` for maintenance.
+
+Quality still reads "not tested" and the page still says the server cannot be
+installed. Lifting those two requires a Glama-*hosted* release — re-hosting a
+server that is already free on Cloudflare onto metered billing (machine-hours
+plus egress) for no reason but to flip two labels. Declined deliberately; the
+labels are not worth the bill. The free half of the problem was fixed instead:
+`upshift-mcp` is published on npm, so any client can run it with `npx` without
+Glama hosting anything.
 
 **The audit's performance signal is thin, on purpose.** One server-side fetch
 measures bytes and elapsed time. It cannot measure LCP, CLS or anything a
