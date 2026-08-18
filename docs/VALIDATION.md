@@ -58,42 +58,48 @@ attacker could have requested directly. A build for a client that adds auth or
 write tools does not inherit that property, which is why `ALLOWED_ORIGINS` and
 an egress allowlist are day-one items on those and not on this one.
 
-**The registry entry is live; the Glama listing is claimed but has no Glama
-release, which is what "cannot be installed" means.** `com.upshiftsites/mcp` is
-published `active` on the official registry against the DNS-verified namespace.
-The Glama listing was approved and claimed on 2026-08-16 and reads `A` for
-license (permissive) and `C` for maintenance.
+**The registry entry is live, and the Glama listing is installable as of
+2026-08-17.** `com.upshiftsites/mcp` is published `active` on the official
+registry against the DNS-verified namespace. The Glama listing now shows an
+**Install Server** button in place of "this server cannot be installed", and
+reads `A` for license and `A` for maintenance.
 
-Its Score tab states the rule plainly: a Glama "release" is not a GitHub
-release. It is created from their admin panel by configuring a Dockerfile build
-spec, clicking Deploy, and — once the build test passes — Make Release. That is
-what lets Glama run its security checks and lets users deploy the server, and
-it is the single gate behind both "this server cannot be installed" and
-quality "not tested" (the page says outright that tool-definition-quality and
-server-coherence scoring require a release).
+"Cannot be installed" meant **no Glama release** — documented on the listing's
+own Score tab the entire time. A Glama release is not a GitHub release: it is a
+build spec configured in their admin panel, then Build, then Create Release. It
+is also what lifted maintenance from `C`, because the same sync finally exposed
+the CI runs, the GitHub releases and the commit activity that the stale crawl
+had reported as missing.
 
-This entry previously claimed the cause was a missing `command` block in the
-README's `mcpServers` config, inferred from comparing two listings Glama does
-treat as installable. That was wrong. The inference was replaced by the
-documented rule only after reading the Score tab, which had said so all along.
-The README's stdio config block was added anyway and stays — it is the config a
-user needs, and npm now ships it — but it never addressed this label. A
-`Dockerfile` is now in the repo so the release is one admin action away rather
-than a build to write first.
+Two things this doc claimed before the Score tab was read, both wrong, recorded
+because the pattern is the lesson:
 
-Two related facts, since both were also guessed at here before being checked:
-Glama syncs a server from GitHub at least daily and exposes a manual **Sync
-Server** button in the admin panel, so a stale crawl is a button rather than a
-wait; and the `hosting:remote-capable` attribute is a *classification*, not the
-install gate. At the commit Glama had indexed (`9f3b6e5`, before the npm
-package existed) that classification was correct.
+1. **That a `command` key in the README's `mcpServers` block was the install
+   gate.** Inferred from comparing two listings Glama does treat as
+   installable. The README's stdio block was added on the strength of it and
+   stays — it is the config a user needs and npm ships it — but it never
+   touched this label.
+2. **That `hosting:remote-capable` was the gate.** It is a classification.
+   Proof: the label cleared while that attribute stayed exactly
+   `hosting:remote-capable`, unchanged before and after the release.
 
-**Unverified:** everything past the Dockerfile. The image has never been built
-— Docker is not installed on the build machine, so the build stages were
-simulated on the host instead: `npm run build` emits `dist/cli.js`, that
-entrypoint serves a clean JSON-RPC frame over stdio, and it still runs with
-`--omit=dev` dependencies only. Glama's build test is the first real build.
-Whether a release then clears the label is likewise unverified.
+A third correction, from actually opening the page: **Glama does not use this
+repo's `Dockerfile`.** Its admin panel generates one from form fields — base
+image, build steps, CMD — and the generated file clones the repo, runs
+`npm install && npm run build`, and starts `mcp-proxy -- node dist/cli.js`. So
+what Glama deploys is the stdio path wrapped in `mcp-proxy`, not the Worker.
+The repo `Dockerfile` was written believing the release needed one; it is kept
+as a documented way to containerize the server, but it is not what runs there,
+and it has still never been built locally (no Docker on this machine).
+
+The build test passed on the first attempt: 44 packages, 0 vulnerabilities,
+`tsc -p tsconfig.build.json` compiled, image exported, and the container
+started far enough for Glama to read the tool schemas back.
+
+**Still unverified:** quality reads "not tested". The Score tab says
+tool-definition-quality and server-coherence scoring require a release, and one
+now exists, but their scan has not run since — so whether it populates, and
+what it scores, is unknown rather than pending.
 
 **The audit's performance signal is thin, on purpose.** One server-side fetch
 measures bytes and elapsed time. It cannot measure LCP, CLS or anything a
