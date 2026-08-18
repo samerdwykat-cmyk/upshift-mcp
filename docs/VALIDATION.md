@@ -58,39 +58,42 @@ attacker could have requested directly. A build for a client that adds auth or
 write tools does not inherit that property, which is why `ALLOWED_ORIGINS` and
 an egress allowlist are day-one items on those and not on this one.
 
-**The registry entry is live; the Glama listing is claimed, and its quality
-score is unearned on purpose.** `com.upshiftsites/mcp` is published `active` on
-the official registry against the DNS-verified namespace. The Glama listing was
-approved and claimed on 2026-08-16 and currently reads `A` for license
-(permissive) and `C` for maintenance.
+**The registry entry is live; the Glama listing is claimed but has no Glama
+release, which is what "cannot be installed" means.** `com.upshiftsites/mcp` is
+published `active` on the official registry against the DNS-verified namespace.
+The Glama listing was approved and claimed on 2026-08-16 and reads `A` for
+license (permissive) and `C` for maintenance.
 
-Quality still reads "not tested" and the page still says the server cannot be
-installed.
+Its Score tab states the rule plainly: a Glama "release" is not a GitHub
+release. It is created from their admin panel by configuring a Dockerfile build
+spec, clicking Deploy, and — once the build test passes — Make Release. That is
+what lets Glama run its security checks and lets users deploy the server, and
+it is the single gate behind both "this server cannot be installed" and
+quality "not tested" (the page says outright that tool-definition-quality and
+server-coherence scoring require a release).
 
-"Cannot be installed" was first written off here as needing a Glama-*hosted*
-release. That was wrong, and it was wrong in the expensive direction — it
-argued for paying to re-host a free server. Comparing against listings Glama
-does treat as installable shows the actual signal is a `mcpServers` config
-block containing a `command` in the README. This README had only the remote
-form (`type`/`url`), which is not something anyone can install; the npx path
-existed but was documented as a bare shell line. The stdio config block is now
-in the README, which costs nothing and is the config a user wants regardless.
+This entry previously claimed the cause was a missing `command` block in the
+README's `mcpServers` config, inferred from comparing two listings Glama does
+treat as installable. That was wrong. The inference was replaced by the
+documented rule only after reading the Score tab, which had said so all along.
+The README's stdio config block was added anyway and stays — it is the config a
+user needs, and npm now ships it — but it never addressed this label. A
+`Dockerfile` is now in the repo so the release is one admin action away rather
+than a build to write first.
 
-**The cause is confirmed, and it is staleness rather than judgement.** Glama's
-page links a source tree at commit `9f3b6e5` — six commits behind `main`, and
-one commit before `86bc15f`, which published the npm package. So
-`hosting:remote-capable` was *correct* for what was crawled: at that commit the
-server really was remote-only. There is no classification to argue, only a
-crawl to wait for. Reported to support@glama.ai on 2026-08-17 with the commit
-range.
+Two related facts, since both were also guessed at here before being checked:
+Glama syncs a server from GitHub at least daily and exposes a manual **Sync
+Server** button in the admin panel, so a stale crawl is a button rather than a
+wait; and the `hosting:remote-capable` attribute is a *classification*, not the
+install gate. At the commit Glama had indexed (`9f3b6e5`, before the npm
+package existed) that classification was correct.
 
-**Unverified:** whether the re-crawl lands and the label flips. Glama publishes
-no cadence and exposes no refresh endpoint, so a scheduled routine polls the
-`attributes` field daily rather than anyone remembering to look.
-
-Quality "not tested" is a separate matter and does still want a Glama-hosted
-release — declined deliberately, since it puts an already-free Cloudflare
-server on metered billing to flip one label.
+**Unverified:** everything past the Dockerfile. The image has never been built
+— Docker is not installed on the build machine, so the build stages were
+simulated on the host instead: `npm run build` emits `dist/cli.js`, that
+entrypoint serves a clean JSON-RPC frame over stdio, and it still runs with
+`--omit=dev` dependencies only. Glama's build test is the first real build.
+Whether a release then clears the label is likewise unverified.
 
 **The audit's performance signal is thin, on purpose.** One server-side fetch
 measures bytes and elapsed time. It cannot measure LCP, CLS or anything a

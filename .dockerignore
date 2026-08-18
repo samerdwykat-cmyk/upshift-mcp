@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.git/
+.github/
+.wrangler/
+docs/
+evals/
+test/
+scripts/
+*.tgz
+*.log
+.DS_Store
+.dev.vars
